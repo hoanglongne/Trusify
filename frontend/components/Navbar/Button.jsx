@@ -12,11 +12,11 @@ function Button({ wallet }) {
         isSignedIn = wallet.signIn();
     };
     return (
-        <div>
+        <div className="font-urbanist">
             {console.log(isSignedIn)}
-            {isSignedIn ? <button className="w-28 h-11 rounded-full bg-black text-white border border-solid border-black" onClick={handleSignOut }>
+            {isSignedIn ? <button className="w-28 h-11 rounded-full bg-black text-white border border-solid border-black " onClick={handleSignOut }>
                 Sign Out
-            </button> : <button className="mx-5 w-28 h-11 rounded-full bg-white text-black border border-solid border-black " onClick={handleSignUp} >
+            </button> : <button className="mx-5 w-28 h-11 rounded-full bg-white text-black border border-solid border-black duration-200 hover:bg-[#D45D75] hover:text-white hover:border-0" onClick={handleSignUp} >
                 Sign In
             </button>}
         </div>

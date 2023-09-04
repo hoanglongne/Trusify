@@ -5,10 +5,9 @@ function LogoContainer() {
   return (
     <a href="/">
       <div className="flex justify-between items-center">
-        <img src={Logo} alt="#digirec" />
-        <div className="mx-2.5">
-          <img src={DIGIREC} alt="#digirec" />
-        </div>
+        <h2 className="mx-2.5 text-3xl text-[#7E9996] font-urbanist font-black">
+        CHIIIII
+        </h2>
       </div>
     </a>
   );

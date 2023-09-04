@@ -1,12 +1,12 @@
 import LogoContainer from "./LogoContainer";
-import SearchBar from "./SearchBar";
+import NavItems from "./NavItems";
 import Button from "./Button";
 
 function Navbar({wallet}) {
     return (
-        <div className="flex justify-around items-center h-[125px] w-full border-b border-solid border-gray-300">
+        <div className="flex fixed w-screen justify-around items-center h-[125px] bg-white">
                 <LogoContainer/>
-                <SearchBar/>
+                <NavItems/>
                 <Button wallet={wallet}/>
         </div>
     );
