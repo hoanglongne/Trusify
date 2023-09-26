@@ -4,6 +4,7 @@ import LeftPane from "../components/LeftPane";
 import RightPane from "../components/RightPane";
 import Layout from "../components/Layout";
 import '../index.css'
+import AddProductButton from "../components/AddProductButton";
 
 export default function Home({wallet, contract}) {
   return (
@@ -16,6 +17,7 @@ export default function Home({wallet, contract}) {
           <div className="h-full w-full">
             <RightPane/>
           </div>
+          <AddProductButton/>
         </div>
       </Layout>
     </div>

@@ -17,3 +17,5 @@ panic = "abort"
 
 [dependencies]
 near-sdk = "4.1.1"
+getrandom = { version = "0.2", features = ["js"] }
+uuid = { version = "1.4.1", features = ["serde", "v4"] }

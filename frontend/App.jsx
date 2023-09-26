@@ -6,9 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import ConfirmSuccess from './pages/ConfirmSuccess';
-
-import { EducationalText, SignInPrompt, SignOutButton } from './ui-components';
 import CreateProduct from './pages/CreateProduct';
+import BecomeAnOwner from './pages/BecomeAnOwner';
 
 function App({wallet, contract}) {
   
@@ -22,6 +21,7 @@ function App({wallet, contract}) {
           {/* <Route path='/signup' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
           <Route path='/confirmsuccess' element={<ConfirmSuccess/>} />
           <Route path='/create-product' element={<CreateProduct wallet={wallet} contract={contract}/>} />
+          <Route path='/create-owner' element={<BecomeAnOwner wallet={wallet} contract={contract}/>} />
         </Routes>
       </div>
     </Router>
