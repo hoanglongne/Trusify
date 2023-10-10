@@ -21,7 +21,6 @@ function BecomeAnOwner({contract, wallet}) {
         });
       }
 
-    
 
     return (
         <Layout wallet={wallet}>
