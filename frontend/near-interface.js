@@ -15,4 +15,8 @@ export class Contract {
     this.wallet.callMethod({ contractId: this.contractId, method: "create_owner", args:{name: name, desc: desc}})
   }
 
+  async addNewProduct(product_id, price , name , desc , category, images, timelimit) {
+    this.wallet.callMethod({ contractId: this.contractId, method: "create_product", args:{product_id: product_id, price: price ,name: name, desc: desc,  category: category, images: images, timelimit: timelimit}})
+  }
+
 }

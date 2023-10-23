@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import React from 'react'
 import axios from 'axios';
@@ -7,6 +8,35 @@ import Button from "./Button";
 function Pinata({contract}) {
   const [fileImg, setFileImg] = useState(null);
   const [previewUrl, setPreviewUrl] = useState();
+  const [state, setState] = useState({
+    name:"",
+    desc:"",
+    productId:"",
+    category:""
+  });
+  const [price, setPrice] = useState(0)
+
+  function handleTextChange(evt) {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value
+    });
+    console.log(state)
+  }
+
+  function handlePriceChange(evt) {
+    const value = evt.target.value;
+    setPrice(value);
+    console.log(price)
+  }
+
+
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/'); // Replace '/other-page' with the URL you want to redirect to
+  };
 
   const handleImgChange = (e) => {
     setFileImg(e.target.files[0]);
@@ -22,24 +52,29 @@ function Pinata({contract}) {
   
   const sendFileToIPFS = async (e) => {
     e.preventDefault()
-    if (fileImg) {
-        try {
-            const formData = new FormData();
-            formData.append("file", fileImg);
 
-            const resFile = await axios({
-                method: "post",
-                url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
-                data: formData,
-                headers: {
-                    'pinata_api_key': `${process.env.REACT_APP_PINATA_API_KEY}`,
-                    'pinata_secret_api_key': `${process.env.REACT_APP_PINATA_API_SECRET}`,
-                    "Content-Type": "multipart/form-data"
-                },
-            });
-            // contract
-            const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-         console.log(ImgHash); 
+    if (fileImg) {
+      try {
+        const formData = new FormData();
+        formData.append("file", fileImg);
+        
+        const resFile = await axios({
+          method: "post",
+          url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          data: formData,
+          headers: {
+            'pinata_api_key': `${process.env.REACT_APP_PINATA_API_KEY}`,
+            'pinata_secret_api_key': `${process.env.REACT_APP_PINATA_API_SECRET}`,
+            "Content-Type": "multipart/form-data"
+          },
+        });
+        // contract
+        const ImgHash = `https://maroon-odd-mole-2.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+        const img_arr = [ImgHash]
+        const timelimit = 2
+        contract.addNewProduct(state.productId, parseInt(price), state.name, state.desc, state.category, img_arr, timelimit )
+        // console.log(state.productId, parseInt(price), state.name, state.desc, state.category, img_arr, timelimit)
+        // console.log(typeof(parseInt(price)), typeof(timelimit))
         } catch (error) {
             console.log("Error sending File to IPFS: ")
             console.log(error)
@@ -70,7 +105,7 @@ function Pinata({contract}) {
         }
         <label className="cursor-pointer font-urbanist text-[14px] bg-[#7E9996] p-4 text-white flex items-center justify-center rounded-3xl" htmlFor="inputTag">
           Select Images
-          <input className="hidden" accept="image/*" id="inputTag" type="file"  onChange = {handleImgChange} required/>   
+          <input className="hidden" accept="image/*" id="inputTag" type="file" name="selectImage"  onChange = {handleImgChange} required/>   
         </label>
       </div>
       <div className="flex-1 font-urbanist flex flex-col justify-between">
@@ -79,41 +114,45 @@ function Pinata({contract}) {
               <label className="flex-1" htmlFor="productId">
                 Product ID
               </label>
-              <input className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base" name="productId"  id="productId" type="text" />
+              <input onChange={handleTextChange} value={state.productId} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="name">
                 Name
               </label>
-              <input className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base" name="name"  id="name" type="text" />
+              <input onChange={handleTextChange} value={state.name} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="desc">
                 Desc
               </label>
-              <input className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base" name="desc"  id="desc" type="text" />
+              <input onChange={handleTextChange} value={state.desc} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="desc"  id="desc" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="price">
                 Price
               </label>
-              <input className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base" name="price"  id="price" type="text" />
+              <input onChange={handlePriceChange} value={price} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="price"  id="price" type="number" />
             </div>
 
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="category">
                 Category
               </label>
-              <input className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base" name="category"  id="category" type="text" />
+              <input onChange={handleTextChange} value={state.category} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="category"  id="category" type="text" />
             </div>
             
                 
           </div>
 
-          <Button  type='submit'> Create new Product </Button> 
+          <div className="flex gap-5">
+            <Button pink type='submit'> Create new Product </Button> 
+            <button className="px-6 py-3 text-base rounded-[13px] border-[1px] bg-[#D45D75] text-white hover:bg-white hover:border-[#D45D75] hover:text-[#D45D75] duration-300" onClick={handleRedirect}>Cancel</button>
+          </div>
+
       </div>
 
     </form>
