@@ -158,6 +158,8 @@ impl Contract {
     self.category_by_id.insert(&category_id.clone(),&category_to_push);
     let mut owner =  self.owners.get(&owner_id).unwrap();
     owner.own_product.push(product.clone());
+    //TODO: Test xem có tự động count cho total product chưa
+    owner.total_product += 1;
     self.products.insert(&self.total_products,&product); 
     self.owners.insert(&owner_id_clone,&owner);
     self.product_by_id.insert(&product_id, &product.clone());

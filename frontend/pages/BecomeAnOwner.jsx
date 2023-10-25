@@ -1,16 +1,23 @@
 import React, {useState} from 'react'
 import Layout from '../components/Layout'
 import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 function BecomeAnOwner({contract, wallet}) {
+    const navigate = useNavigate();
     const [state, setState] = useState({
         name:"",
         desc:""
     });
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault()
-        contract.addNewOwner(state.name, state.desc)
+        try {
+            await contract.addNewOwner(state.name, state.desc)
+            navigate('/')
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     function handleChange(evt) {
@@ -52,3 +59,6 @@ function BecomeAnOwner({contract, wallet}) {
 }
 
 export default BecomeAnOwner
+
+//TODO: Thêm redirect về trang chủ sau khi submit thành công
+//TODO: Tự động redirect vào trang này sau khi signin xong & chưa create owner

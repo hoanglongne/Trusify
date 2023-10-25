@@ -1,41 +1,30 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-
 import React from 'react'
 import axios from 'axios';
 import Button from "./Button";
 
-function Pinata({contract}) {
+function Pinata({contract, navigate}) {
   const [fileImg, setFileImg] = useState(null);
   const [previewUrl, setPreviewUrl] = useState();
   const [state, setState] = useState({
+    productId:"",
+    price: "",
     name:"",
     desc:"",
-    productId:"",
     category:""
   });
-  const [price, setPrice] = useState(0)
 
-  function handleTextChange(evt) {
+  function handleChange(evt) {
     const value = evt.target.value;
     setState({
       ...state,
       [evt.target.name]: value
     });
-    console.log(state)
   }
 
-  function handlePriceChange(evt) {
-    const value = evt.target.value;
-    setPrice(value);
-    console.log(price)
-  }
-
-
-  const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate('/'); // Replace '/other-page' with the URL you want to redirect to
+    navigate('/');
   };
 
   const handleImgChange = (e) => {
@@ -72,10 +61,9 @@ function Pinata({contract}) {
         const ImgHash = `https://maroon-odd-mole-2.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
         const img_arr = [ImgHash]
         const timelimit = 2
-        contract.addNewProduct(state.productId, parseInt(price), state.name, state.desc, state.category, img_arr, timelimit )
-        // console.log(state.productId, parseInt(price), state.name, state.desc, state.category, img_arr, timelimit)
-        // console.log(typeof(parseInt(price)), typeof(timelimit))
-        } catch (error) {
+        contract.addNewProduct(state.productId, parseInt(state.price), state.name, state.desc, state.category, img_arr, timelimit )
+        navigate('/')
+      } catch (error) {
             console.log("Error sending File to IPFS: ")
             console.log(error)
         }
@@ -114,35 +102,35 @@ function Pinata({contract}) {
               <label className="flex-1" htmlFor="productId">
                 Product ID
               </label>
-              <input onChange={handleTextChange} value={state.productId} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
+              <input onChange={handleChange} value={state.productId} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="name">
                 Name
               </label>
-              <input onChange={handleTextChange} value={state.name} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
+              <input onChange={handleChange} value={state.name} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="desc">
                 Desc
               </label>
-              <input onChange={handleTextChange} value={state.desc} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="desc"  id="desc" type="text" />
+              <input onChange={handleChange} value={state.desc} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="desc"  id="desc" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="price">
                 Price
               </label>
-              <input onChange={handlePriceChange} value={price} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="price"  id="price" type="number" />
+              <input onChange={handleChange} value={state.price} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="price"  id="price" type="number" />
             </div>
 
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="category">
                 Category
               </label>
-              <input onChange={handleTextChange} value={state.category} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="category"  id="category" type="text" />
+              <input onChange={handleChange} value={state.category} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="category"  id="category" type="text" />
             </div>
             
                 
@@ -160,3 +148,8 @@ function Pinata({contract}) {
 }
 
 export default Pinata
+
+//TODO: Thêm redirect về trang chủ sau khi submit thành công 
+//TODO: Tự động redirect về lại trang chủ nếu chưa signin
+//TODO: Nghiên cứu cách để biết người dùng để đăng ký owner chưa, nếu chưa thì redirect về trang chủ
+//TODO: Tự động quản lý product để owner ko phải tự điền -> tránh bị trùng 
