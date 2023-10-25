@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import ImgProductDetail from "../components/ProductDetail/IngProductDetail";
 import InfoProductDetail from "../components/ProductDetail/InFoProductDetail";
-import menuItems from '../placeholder.js'
 
 export default function ProductDetail({wallet}) {
   const { productId } = useParams()
