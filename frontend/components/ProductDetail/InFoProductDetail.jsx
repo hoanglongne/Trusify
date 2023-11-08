@@ -12,8 +12,16 @@ import LogoContainer from "../Navbar/LogoContainer";
 import InfoProduct from "../Confirm/InfoProduct";
 import InfoBill from "../Confirm/InfoBill";
 import CloseConfirm from "../../assets/images/CloseConfirm.svg";
+import { signal } from "@preact/signals-react";
 
 function InfoProductDetail() {
+  const showRentNotification = signal(false);
+  const showRentSuccess = signal(false);
+  const startDate = signal(null);
+  const endDate = signal(null);
+  
+  const today = new Date(); //lấy ngày hiện tại để xử lý sự kiện ngăn chọn ngày trong quá khứ
+
   // Xử lý sự kiện khi người dùng chọn đánh giá
   const handleRatingChange = (newRating) => {
     // Gửi newRating lên máy chủ (nếu cần)
@@ -21,26 +29,20 @@ function InfoProductDetail() {
   };
 
   // handle việc bật thông báo khi nhấn button Rent
-  const [showRentNotification, setShowRentNotification] = useState(false);
-  const [showRentSuccess, setShowRentSuccess] = useState(false);
 
   const handleRentNowClick = () => {
-    setShowRentNotification(!showRentNotification);
+    showRentNotification.value = !showRentNotification.value;
     // document.querySelector(".containerConfirm").classList.remove("hidden");
   };
 
   // xử lý sự kiện chọn ngày
-  const today = new Date(); //lấy ngày hiện tại để xử lý sự kiện ngăn chọn ngày trong quá khứ
-
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
   const handleStartDateChange = (date) => {
-    setStartDate(date);
+    startDate.value = date;
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(date);
+    endDate.value = date;
   };
 
   // hàm tính toán số ngày thuê
@@ -50,10 +52,10 @@ function InfoProductDetail() {
   };
 
   // xử lý sự kiện chọn số lượng
-  const [quantity, setQuantity] = useState(1);
+  const quantity = signal(1);
 
   const handleNumberButtonClick = (value) => {
-    setQuantity(value);
+    quantityvalue.value = value
   };
 
   const numberMapping = {
@@ -146,11 +148,11 @@ function InfoProductDetail() {
                 <div className=" flex  items-center mt-2.5">
                   <div className=" flex border border-solid border-[#343D47] p-1.5 rounded-full">
                     <DatePicker
-                      selected={startDate}
+                      selected={startDate.value}
                       onChange={handleStartDateChange}
                       selectsStart
-                      startDate={startDate}
-                      endDate={endDate}
+                      startDate={startDate.value}
+                      endDate={endDate.value}
                       placeholderText="Start Date"
                       dateFormat="dd/MM/yyyy"
                       minDate={today}
@@ -160,14 +162,14 @@ function InfoProductDetail() {
                     />
                     <img src={IconVector} alt="#" />
                     <DatePicker
-                      selected={endDate}
+                      selected={endDate.value}
                       onChange={handleEndDateChange}
                       selectsEnd
-                      startDate={startDate}
-                      endDate={endDate}
+                      startDate={startDate.value}
+                      endDate={endDate.value}
                       placeholderText="End Date"
                       dateFormat="dd/MM/yyyy"
-                      minDate={startDate}
+                      minDate={startDate.value}
                       customInput={
                         <input className=" w-[110px] h-[30px] p-2 text-center text-[0.8rem]" />
                       }
@@ -179,7 +181,7 @@ function InfoProductDetail() {
                   {/* Hiển thị số ngày đã chọn */}
                   {
                     <div className="text-[#343D47] font-semibold text-[1rem]">
-                      {calculateDaysDifference(startDate, endDate)} days
+                      {calculateDaysDifference(startDate.value, endDate.value)} days
                     </div>
                   }
                 </div>
@@ -212,7 +214,7 @@ function InfoProductDetail() {
                     Service fee (5%):
                     <span className="ml-3.5">
                       {(
-                        TotalPrice(price, startDate, endDate, quantity) * 0.05
+                        TotalPrice(price, startDate.value, endDate.value, quantity.value) * 0.05
                       ).toFixed(3)}
                       $
                     </span>
@@ -239,7 +241,7 @@ function InfoProductDetail() {
                   </button>
                 </div>
                 {/* RentConfirm*/}
-                {showRentNotification && (
+                {showRentNotification.value && (
                   <div
                     className="containerConfirm z-10000 bg-black/50 fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center"
                     onClick={handleRentNowClick}
@@ -262,17 +264,17 @@ function InfoProductDetail() {
                       </div>
                       <InfoProduct text={text} img={img} />
                       <InfoBill
-                        timeRent={calculateDaysDifference(startDate, endDate)}
+                        timeRent={calculateDaysDifference(startDate.value, endDate.value)}
                         aDayRentFee={price}
                         serviceFee={0.765}
                         total={(
-                          TotalPrice(price, startDate, endDate, quantity) +
-                          TotalPrice(price, startDate, endDate, quantity) * 0.05
+                          TotalPrice(price, startDate.value, endDate.value, quantity.value) +
+                          TotalPrice(price, startDate.value, endDate.value, quantity.value) * 0.05
                         ).toFixed(3)}
                       />
                       <span
                         onClick={() => {
-                          setShowRentSuccess(!showRentSuccess);
+                          showRentSuccess.value = !showRentSuccess.value;
                           handleRentNowClick()
                         }}
                       >
@@ -282,11 +284,11 @@ function InfoProductDetail() {
                   </div>
                 )}
 
-                {showRentSuccess && (
+                {showRentSuccess.value && (
                   <div
                     className="containerConfirm z-10000 bg-black/50 fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center"
                     onClick={() => {
-                      setShowRentSuccess(!showRentSuccess);
+                      showRentSuccess.value = !showRentSuccess.value;
                     }}
                   >
                     <div
@@ -300,7 +302,7 @@ function InfoProductDetail() {
                         transition duration-200 ease-in-out"
                         src={CloseConfirm}
                         alt=""
-                        onClick={() => {setShowRentSuccess(!showRentSuccess);}}
+                        onClick={() => {showRentSuccess.value = !showRentSuccess.value;}}
                       />
                       <div className="wrapLogo h-[70px] w-[180px]">
                         <LogoContainer />
@@ -333,8 +335,8 @@ function InfoProductDetail() {
                   <div className="text-[#343D47] text-[1.4rem] ml-2.5">
                     <span className="font-bold">
                       {(
-                        TotalPrice(price, startDate, endDate, quantity) +
-                        TotalPrice(price, startDate, endDate, quantity) * 0.05
+                        TotalPrice(price, startDate.value, endDate.value, quantity.value) +
+                        TotalPrice(price, startDate.value, endDate.value, quantity.value) * 0.05
                       ).toFixed(3)}
                       ${" "}
                     </span>

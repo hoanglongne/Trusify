@@ -1,51 +1,64 @@
-import { useState } from "react";
 import React from 'react'
 import axios from 'axios';
 import Button from "./Button";
+import { signal } from "@preact/signals-react";
+
+const fileImg = signal(null)
+const previewUrl = signal()
+const productId = signal("")
+const price = signal(0)
+const name = signal("")
+const desc = signal("")
+const category = signal("")
+
 
 function Pinata({contract, navigate}) {
-  const [fileImg, setFileImg] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState();
-  const [state, setState] = useState({
-    productId:"",
-    price: "",
-    name:"",
-    desc:"",
-    category:""
-  });
 
-  function handleChange(evt) {
-    const value = evt.target.value;
-    setState({
-      ...state,
-      [evt.target.name]: value
-    });
-  }
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "productId":
+        productId.value = value;
+        break;
+      case "price":
+        price.value = parseFloat(value); // Handle price as a number
+        break;
+      case "name":
+        name.value = value;
+        break;
+      case "desc":
+        desc.value = value;
+        break;
+      case "category":
+        category.value = value;
+        break;
+    }
+  };
+  
 
   const handleRedirect = () => {
     navigate('/');
   };
 
   const handleImgChange = (e) => {
-    setFileImg(e.target.files[0]);
+    fileImg.value = e.target.files[0];
   };
 
-  if(fileImg) {
+  if(fileImg.value) {
     const reader = new FileReader();
     reader.onload = () => {
-      setPreviewUrl(reader.result);
+      previewUrl.value = reader.result;
     };
-    reader.readAsDataURL(fileImg);
+    reader.readAsDataURL(fileImg.value);
   }
   
   const sendFileToIPFS = async (e) => {
     e.preventDefault()
 
-    if (fileImg) {
+    if (fileImg.value) {
       try {
         const formData = new FormData();
-        formData.append("file", fileImg);
+        formData.append("file", fileImg.value);
         
         const resFile = await axios({
           method: "post",
@@ -61,7 +74,7 @@ function Pinata({contract, navigate}) {
         const ImgHash = `https://maroon-odd-mole-2.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
         const img_arr = [ImgHash]
         const timelimit = 2
-        contract.addNewProduct(state.productId, parseInt(state.price), state.name, state.desc, state.category, img_arr, timelimit )
+        contract.addNewProduct(productId.value, parseInt(price.value), name.value, desc.value, category.value, img_arr, timelimit )
         navigate('/')
       } catch (error) {
             console.log("Error sending File to IPFS: ")
@@ -75,9 +88,9 @@ function Pinata({contract, navigate}) {
 
       <div className="flex-1 flex flex-col rounded-xl justify-center items-center bg-[#FAFFFE] border-2 border-[#7E9996] border-dashed max-h-full">
         
-        {previewUrl ? 
+        {previewUrl.value ? 
         <div className="rounded-xl overflow-clip mb-2 max-h-[70%] max-w-[70%]">
-          <img className="h-full" src={previewUrl} alt="Selected image" />
+          <img className="h-full" src={previewUrl.value} alt="Selected image" />
         </div>  :
         <div className="mx-20 mb-8 text-xl font-urbanist text-[#7E9996] text-center flex flex-col gap-5 justify-center items-center">
             <svg width="110" height="100" viewBox="0 0 110 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,35 +115,35 @@ function Pinata({contract, navigate}) {
               <label className="flex-1" htmlFor="productId">
                 Product ID
               </label>
-              <input onChange={handleChange} value={state.productId} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
+              <input onChange={handleChange} value={productId.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="name">
                 Name
               </label>
-              <input onChange={handleChange} value={state.name} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
+              <input onChange={handleChange} value={name.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="desc">
                 Desc
               </label>
-              <input onChange={handleChange} value={state.desc} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="desc"  id="desc" type="text" />
+              <input onChange={handleChange} value={desc.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="desc"  id="desc" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="price">
                 Price
               </label>
-              <input onChange={handleChange} value={state.price} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="price"  id="price" type="number" />
+              <input onChange={handleChange} value={price.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="price"  id="price" type="number" />
             </div>
 
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="category">
                 Category
               </label>
-              <input onChange={handleChange} value={state.category} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="category"  id="category" type="text" />
+              <input onChange={handleChange} value={category.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="category"  id="category" type="text" />
             </div>
             
                 
@@ -149,7 +162,8 @@ function Pinata({contract, navigate}) {
 
 export default Pinata
 
-//TODO: Thêm redirect về trang chủ sau khi submit thành công 
-//TODO: Tự động redirect về lại trang chủ nếu chưa signin
+
+//TODO: Tự động redirect về lại trang chủ nếu chưa signin 
 //TODO: Nghiên cứu cách để biết người dùng để đăng ký owner chưa, nếu chưa thì redirect về trang chủ
 //TODO: Tự động quản lý product để owner ko phải tự điền -> tránh bị trùng 
+//TODO: Thêm Toastify 

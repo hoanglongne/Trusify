@@ -2,30 +2,42 @@ import React, {useState} from 'react'
 import Layout from '../components/Layout'
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { signal } from "@preact/signals-react";
+
+const ownerName = signal('')
+const desc = signal('')
 
 function BecomeAnOwner({contract, wallet}) {
     const navigate = useNavigate();
-    const [state, setState] = useState({
-        name:"",
-        desc:""
-    });
+    let isSignedIn = wallet.get_isSignedIn();
+  
+    React.useEffect(() => {
+      if (!isSignedIn) {
+        navigate('/', { replace: true });
+      }
+    }, isSignedIn);
+    
 
     async function handleSubmit(e) {
         e.preventDefault()
         try {
-            await contract.addNewOwner(state.name, state.desc)
+            await contract.addNewOwner(name, desc)
             navigate('/')
         } catch (error) {
             console.log(error)
         }
     }
 
-    function handleChange(evt) {
-        const value = evt.target.value;
-        setState({
-          ...state,
-          [evt.target.name]: value
-        });
+    function handleChange(e) {
+        const { name, value } = e.target;
+        switch (name) {
+        case "name":
+            ownerName.value = value;
+            break;
+        case "value":
+            desc.value = value
+            break;
+        }
       }
 
 
@@ -40,14 +52,14 @@ function BecomeAnOwner({contract, wallet}) {
                             <label htmlFor="ownerName" className='text-base'>
                                     Name your shop
                             </label>
-                            <input className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='name' type="text" id='ownerName' onChange={handleChange} value={state.name} required />
+                            <input className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='name' type="text" id='ownerName' onChange={handleChange} value={ownerName.value} required />
                         </div>
 
                         <div className='flex items-center justify-between flex-row flex-1'>    
                             <label htmlFor="desc" className='text-base'>
                                     Describe your shop
                             </label>
-                            <textarea className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='desc' id='desc' onChange={handleChange} value={state.desc} required />
+                            <textarea className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='desc' id='desc' onChange={handleChange} value={desc.value} required />
                         </div>
                     </div>
 
@@ -60,5 +72,10 @@ function BecomeAnOwner({contract, wallet}) {
 
 export default BecomeAnOwner
 
-//TODO: Thêm redirect về trang chủ sau khi submit thành công
+
+//*: Thêm redirect về trang chủ sau khi submit thành công: Done nhưng mà không đợi 
+//*  phản hồi thành công hay thất bại bại nên phải sửa
+
+//TODO: Thêm Toastify 
+//TODO: Sửa thành đến khi có kết quả promise mới redirect và thêm thông báo
 //TODO: Tự động redirect vào trang này sau khi signin xong & chưa create owner
