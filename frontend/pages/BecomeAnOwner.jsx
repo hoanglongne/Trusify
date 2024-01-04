@@ -1,27 +1,27 @@
-import React, {useState} from 'react'
+import React, {useEffect} from 'react'
 import Layout from '../components/Layout'
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { signal } from "@preact/signals-react";
 
+
 const ownerName = signal('')
 const desc = signal('')
-
 function BecomeAnOwner({contract, wallet}) {
     const navigate = useNavigate();
     let isSignedIn = wallet.get_isSignedIn();
-  
-    React.useEffect(() => {
-      if (!isSignedIn) {
-        navigate('/', { replace: true });
-      }
-    }, isSignedIn);
+    
+    // useEffect(() => {
+    //   if (!isSignedIn) {
+    //     navigate('/', { replace: true });
+    //   }
+    // }, isSignedIn);
     
 
     async function handleSubmit(e) {
         e.preventDefault()
         try {
-            await contract.addNewOwner(name, desc)
+            await contract.addNewOwner(ownerName, desc)
             navigate('/')
         } catch (error) {
             console.log(error)
@@ -31,10 +31,10 @@ function BecomeAnOwner({contract, wallet}) {
     function handleChange(e) {
         const { name, value } = e.target;
         switch (name) {
-        case "name":
+        case "ownerName":
             ownerName.value = value;
             break;
-        case "value":
+        case "desc":
             desc.value = value
             break;
         }
@@ -52,7 +52,7 @@ function BecomeAnOwner({contract, wallet}) {
                             <label htmlFor="ownerName" className='text-base'>
                                     Name your shop
                             </label>
-                            <input className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='name' type="text" id='ownerName' onChange={handleChange} value={ownerName.value} required />
+                            <input className='max-w-[70%] flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base' name='ownerName' type="text" id='ownerName' onChange={handleChange} value={ownerName.value} required />
                         </div>
 
                         <div className='flex items-center justify-between flex-row flex-1'>    

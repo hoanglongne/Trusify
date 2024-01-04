@@ -18,7 +18,7 @@ function App({wallet, contract}) {
           <Route path='/' element={<Home wallet={wallet} contract={contract}/>} />
           <Route path='/productdetail/:productId' element={<ProductDetail wallet={wallet} contract={contract}/>} />
           {/* <Route path='/login' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
-          {/* <Route path='/signup' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
+          {/* <Route path='/' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
           <Route path='/confirmsuccess' element={<ConfirmSuccess/>} />
           <Route path='/create-product' element={<CreateProduct wallet={wallet} contract={contract}/>} />
           <Route path='/create-owner' element={<BecomeAnOwner wallet={wallet} contract={contract}/>} />

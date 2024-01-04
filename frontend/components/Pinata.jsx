@@ -2,35 +2,37 @@ import React from 'react'
 import axios from 'axios';
 import Button from "./Button";
 import { signal } from "@preact/signals-react";
+import { v4 as uuidv4 } from 'uuid';
 
 const fileImg = signal(null)
 const previewUrl = signal()
-const productId = signal("")
+const productId = signal(null)
 const price = signal(0)
-const name = signal("")
+const productName = signal("")
 const desc = signal("")
 const category = signal("")
 
 
 function Pinata({contract, navigate}) {
 
+  if (!productId.value) {
+    const generatedUuid = uuidv4();
+    productId.value = generatedUuid;
+  }
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case "productId":
-        productId.value = value;
-        break;
+    switch (e.target.name) {
       case "price":
-        price.value = parseFloat(value); // Handle price as a number
+        price.value = parseFloat(e.target.value); // Handle price as a number
         break;
-      case "name":
-        name.value = value;
+      case "productName":
+        productName.value = e.target.value;
         break;
       case "desc":
-        desc.value = value;
+        desc.value = e.target.value;
         break;
       case "category":
-        category.value = value;
+        category.value = e.target.value;
         break;
     }
   };
@@ -74,7 +76,7 @@ function Pinata({contract, navigate}) {
         const ImgHash = `https://maroon-odd-mole-2.mypinata.cloud/ipfs/${resFile.data.IpfsHash}`;
         const img_arr = [ImgHash]
         const timelimit = 2
-        contract.addNewProduct(productId.value, parseInt(price.value), name.value, desc.value, category.value, img_arr, timelimit )
+        contract.addNewProduct(productId.value, parseInt(price.value), productName.value, desc.value, category.value, img_arr, timelimit )
         navigate('/')
       } catch (error) {
             console.log("Error sending File to IPFS: ")
@@ -113,16 +115,16 @@ function Pinata({contract, navigate}) {
           <div className="flex flex-col gap-3">
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="productId">
-                Product ID
+                Product ID (Automatically generated)
               </label>
-              <input onChange={handleChange} value={productId.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
+              <input onChange={handleChange} value={productId.value} disabled className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productId"  id="productId" type="text" />
             </div>
             
             <div className="flex flex-col">
               <label className="flex-1" htmlFor="name">
                 Name
               </label>
-              <input onChange={handleChange} value={name.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="name"  id="name" type="text" />
+              <input onChange={handleChange} value={productName.value} className="flex-1 border-2 rounded-lg border-[#455579] px-2 py-2 text-black font-medium text-base focus:outline-[#7E9996]" name="productName"  id="productName" type="text" />
             </div>
             
             <div className="flex flex-col">

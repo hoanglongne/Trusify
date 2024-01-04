@@ -1,10 +1,8 @@
-import "regenerator-runtime/runtime";
-
 
 import ARROW from "../../assets/images/Arrow.svg";
 
-export default function ImgProductDetail({images}) {
-
+export default function ImgProductDetail({ productObject}) {
+  const images = productObject.images
 
   let currentIndex = 0;
   function handleImg(e) {
@@ -36,7 +34,7 @@ export default function ImgProductDetail({images}) {
         <img
           src={images[currentIndex]}
           alt=""
-          className="imgProduct h-[500px] w-full object-cover border-[2px] rounded-[20px]"
+          className="imgProduct h-[55vh] w-full object-contain border-[2px] border-[#B9D3D0] rounded-[20px]"
         />
         <div className="wrapArrow w-full absolute top-[50%] left-0 px-[10px] flex justify-between ">
           <div
@@ -59,7 +57,7 @@ export default function ImgProductDetail({images}) {
           <img
             src={image}
             alt=""
-            className="h-[134px] min-w-[150px] mx-[4px] object-cover border-[2px] rounded-[20px]"
+            className="h-[134px] min-w-[150px] mx-[4px] object-cover border-[2px] border-[#B9D3D0] rounded-[20px]"
             onClick={handleImg}
             index={i}
           />

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-//import thư viện
 import StarRatings from "react-star-ratings";
 import IconVector from "../../assets/images/IconVector.svg";
 
@@ -12,91 +11,111 @@ import LogoContainer from "../Navbar/LogoContainer";
 import InfoProduct from "../Confirm/InfoProduct";
 import InfoBill from "../Confirm/InfoBill";
 import CloseConfirm from "../../assets/images/CloseConfirm.svg";
-import { signal } from "@preact/signals-react";
+import { signal} from "@preact/signals-react"; 
+import { useParams } from "react-router-dom";
 
-function InfoProductDetail() {
+export function InfoProductDetail({contract, setProductObject, productObject}) {
   const showRentNotification = signal(false);
   const showRentSuccess = signal(false);
   const startDate = signal(null);
   const endDate = signal(null);
+  const today = new Date();
+  const quantity = signal(1);
+  const params = useParams()
+  const id = params.productId
+
+  // const productObject = signal(null)
+  const [loading, setLoading] = useState(false)
   
-  const today = new Date(); //lấy ngày hiện tại để xử lý sự kiện ngăn chọn ngày trong quá khứ
 
-  // Xử lý sự kiện khi người dùng chọn đánh giá
-  const handleRatingChange = (newRating) => {
-    // Gửi newRating lên máy chủ (nếu cần)
-    // Cập nhật điểm đánh giá ở đây (nếu cần)
-  };
-
-  // handle việc bật thông báo khi nhấn button Rent
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await contract.getProductById(id)
+        setProductObject(data)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
+      }
+    }
+    fetchData()
+  },[])
+  
+  
 
   const handleRentNowClick = () => {
     showRentNotification.value = !showRentNotification.value;
     // document.querySelector(".containerConfirm").classList.remove("hidden");
   };
-
-  // xử lý sự kiện chọn ngày
-
   const handleStartDateChange = (date) => {
     startDate.value = date;
   };
-
   const handleEndDateChange = (date) => {
     endDate.value = date;
   };
-
-  // hàm tính toán số ngày thuê
   const calculateDaysDifference = (startDate, endDate) => {
     const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày do startDate - endDate trả về mili giây
     return Math.round(Math.abs((startDate - endDate) / oneDay) + 1);
   };
-
-  // xử lý sự kiện chọn số lượng
-  const quantity = signal(1);
-
   const handleNumberButtonClick = (value) => {
     quantityvalue.value = value
   };
-
-  const numberMapping = {
-    One: 1,
-    Two: 2,
-    Three: 3,
-    Four: 4,
-  };
-
-  const menuContents = [
-    {
-      id: 1,
-      text: "Sony Supreme Sound: Unparalleled Audio Experience with our High-Performance Headphones!",
-      img: "",
-      viewer: "13",
-      author: "Hoang Long",
-      star: 4.5,
-      amout: "4",
-      descript:
-        "Designed with precision engineering and cutting-edge technology, our high-performance headphones deliver an unparalleled listening experience, whether you're on the go or relaxing at home. Indulge in comfort with their ergonomic design and premium materials that ensure a perfect fit for extended wear. ",
-      price: "15.30",
-    },
-  ];
-
   const TotalPrice = (price, startDate, endDate, quantity) => {
     return price * calculateDaysDifference(startDate, endDate) * quantity;
   };
+  if (productObject == null) {
+    return <div>Loading...</div>;
+  }
   return (
-    <div className="h-full flex-1 pl-[120px]">
-      <div>
-        {menuContents.map(
-          ({ id, text, img, viewer, amout, author, descript, price, star }) => (
+    <div className=" flex-1 pl-[60px]">
+            {loading ? (
+              <p>Loading...</p>
+            ) : 
+            <div>
+              <div className="text-[1.5rem] font-bold uppercase text-[#343D47]">
+                {productObject.name}
+              </div>
+
+                <div className="mt-2.5">
+                      <span>By </span>
+                      <span className="text-[#343D47] font-bold italic">
+                        Hoang Long
+                      </span>
+                      <span className="text-[#343D47] font-bold italic">
+                        {" "}
+                        (2 products)
+                      </span>
+                  </div>
+
+                <div className="mt-5">
+                    {/* Description */}
+                    <div className="w-[90%] text-[#343D47] text-[1rem]">
+                      {productObject.desc}
+                    </div>
+                    <div className="relative mt-2.5 font-bold text-[#343D47] text-[2rem]">
+                      <span className="text-[#C9CACB] font-normal">$</span>
+                      <span>{productObject.price}</span>
+                      <span className="absolute bottom-2 text-[0.8rem] text-black ml-1.5">
+                        (1 day rent fee)
+                      </span>
+                    </div>
+                </div>
+            </div>
+            }
+    </div>) 
+  }
+
+      <div className="max-h-[75vh] overflow-y-auto innerShadow">
             <div key={id}>
               <div>
                 {/* Title */}
-                <div className="text-[1.8rem] font-bold text-[#343D47]">
+                <div className="text-[1.5rem] font-bold text-[#343D47]">
                   {text}
                 </div>
 
                 {/* Rating */}
-                <div className="flex items-center mt-2.5">
+                {/* <div className="flex items-center mt-2.5">
                   <div className="mb-[6px]">
                     <StarRatings
                       rating={star}
@@ -112,7 +131,7 @@ function InfoProductDetail() {
                   <div className="ml-2.5 text-[#343D47] font-bold">
                     Read {viewer} viewer
                   </div>
-                </div>
+                </div> */}
 
                 {/* Author */}
                 <div className="mt-2.5">
@@ -126,6 +145,7 @@ function InfoProductDetail() {
                   </span>
                 </div>
               </div>
+
               <div className="mt-5">
                 {/* Description */}
                 <div className="w-[90%] text-[#343D47] text-[1rem]">
@@ -361,11 +381,5 @@ function InfoProductDetail() {
                 </div>
               </div>
             </div>
-          )
-        )}
       </div>
-    </div>
-  );
-}
-
-export default InfoProductDetail;
+      
