@@ -1,31 +1,65 @@
 import 'regenerator-runtime/runtime';
-import React from 'react';
+import React, { Suspense } from 'react';
 
-// import './assets/global.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import ProductDetail from './pages/ProductDetail';
-import ConfirmSuccess from './pages/ConfirmSuccess';
-import CreateProduct from './pages/CreateProduct';
-import BecomeAnOwner from './pages/BecomeAnOwner';
 
-function App({wallet, contract}) {
-  
-  return ( 
+// Lazy load the components
+const Home = React.lazy(() => import('./pages/Home'));
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const ConfirmSuccess = React.lazy(() => import('./pages/ConfirmSuccess'));
+const CreateProduct = React.lazy(() => import('./pages/CreateProduct'));
+const BecomeAnOwner = React.lazy(() => import('./pages/BecomeAnOwner'));
+
+function App({ wallet, contract }) {
+  return (
     <Router>
       <div>
         <Routes>
-          <Route path='/' element={<Home wallet={wallet} contract={contract}/>} />
-          <Route path='/productdetail/:productId' element={<ProductDetail wallet={wallet} contract={contract}/>} />
-          {/* <Route path='/login' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
-          {/* <Route path='/' element={<ProductDetail wallet={wallet} contract={contract}/>} /> */}
-          <Route path='/confirmsuccess' element={<ConfirmSuccess/>} />
-          <Route path='/create-product' element={<CreateProduct wallet={wallet} contract={contract}/>} />
-          <Route path='/create-owner' element={<BecomeAnOwner wallet={wallet} contract={contract}/>} />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Home wallet={wallet} contract={contract} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/productdetail/:productId"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <ProductDetail wallet={wallet} contract={contract} />
+              </Suspense>
+            }
+          />
+          {/* Other routes */}
+          <Route
+            path="/confirmsuccess"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <ConfirmSuccess />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/create-product"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <CreateProduct wallet={wallet} contract={contract} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/create-owner"
+            element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <BecomeAnOwner wallet={wallet} contract={contract} />
+              </Suspense>
+            }
+          />
         </Routes>
       </div>
     </Router>
-   );
+  );
 }
 
 export default App;

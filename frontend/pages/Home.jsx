@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime";
 import React from "react";
 import LeftPane from "../components/LeftPane";
 import RightPane from "../components/RightPane";
@@ -10,11 +9,11 @@ export default function Home({wallet, contract}) {
   return (
     <div>
       <Layout wallet={wallet}>
-        <div className="w-[98vw] h-screen flex justify-center items-center pt-[125px] p-28">
-          <div className="h-full w-full">
+        <div className="w-full md:w-[98vw] flex flex-col md:flex-row justify-center items-center pt-[125px] p-8 md:p-28">
+          <div className="h-full w-full md:w-1/2">
             <LeftPane />
           </div>
-          <div className="h-full w-full">
+          <div className="h-full w-full md:w-1/2">
             <RightPane/>
           </div>
           <AddProductButton/>

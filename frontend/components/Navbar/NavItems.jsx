@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 function NavItems() {
   return (
     <div>
-        <ul className='flex gap-8 text-md font-urbanist font-semibold duration-300'>
+        <ul className='flex gap-8 flex-col items-center md:flex-row text-md font-urbanist font-semibold duration-300'>
             <li><Link className='hover:text-[#7E9996] duration-300' to="/">Products</Link></li>
             <li><Link className='hover:text-[#7E9996] duration-300' to="/">Shops</Link></li>
             <li><Link className='hover:text-[#7E9996] duration-300' to="/">Catergories</Link></li>

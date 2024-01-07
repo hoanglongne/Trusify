@@ -14,13 +14,15 @@ function CreateProduct({wallet, contract}) {
   }, isSignedIn);
 
   return (
-    <Layout wallet={wallet}>
+    <MemoizedLayout wallet={wallet}>
         <div className='h-full px-[10%] flex flex-col justify-center items-center pt-[125px]'>
             <h2 className='text-3xl text-center font-black uppercase text-[#D45D75]'>Tell us something about your new product</h2>
             <Pinata contract={contract} navigate={navigate} wallet={wallet} />
         </div>
-    </Layout>
+    </MemoizedLayout>
   )
 }
+
+const MemoizedLayout = React.memo(Layout);
 
 export default CreateProduct
