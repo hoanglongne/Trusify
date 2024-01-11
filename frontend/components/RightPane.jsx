@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import pinitaImage from '../assets/pinata.png'
-import beachImage from '../assets/beach.png'
-import longImage from '../assets/long.webp'
-import sunshineImage from '../assets/sunshine.png'
+import beachImage from '../assets/camera.png'
+import longImage from '../assets/iphone.png'
+import sunshineImage from '../assets/headphone.png'
 
 function RightPane() {
   const [selectedProduct, setSelectedProduct] = useState(pinitaImage);
@@ -16,14 +16,14 @@ function RightPane() {
   return (
     <div className='flex flex-col justify-center items-center h-full gap-4 pl-0 md:pl-10 lg:pl-32'>
         <div className='mt-16 md:mt-0 w-full h-full border-2 border-[#B9D3D0] rounded-3xl overflow-hidden'>
-            <div className='h-[40vh] relative'>
-                <img className='absolute top-0 left-0 object-contain h-full w-full' src={selectedProduct} alt="" />
+            <div className='h-[45vh] relative flex justify-center items-center'>
+                <img className='object-contain h-2/3 w-2/3' src={selectedProduct} alt="" />
             </div>
         </div>
         <div className='flex gap-5 justify-center items-center w-full h-24 border-b-2 border-white'>
             {products.map((product, index) => (
-                <div key={index} className='h-full w-24 border-[#B9D3D0] rounded-3xl border-2 relative' onClick={() => handleProductClick(product)}>
-                    <img className='absolute top-0 left-0 object-cover h-full w-full' src={product} alt="" />
+                <div key={index} className='h-full flex justify-center items-center w-full border-[#B9D3D0] rounded-3xl border-2 relative' onClick={() => handleProductClick(product)}>
+                    <img className='object-contain h-2/3 w-2/3' src={product} alt="" />
                 </div>
             ))}
         </div>
