@@ -7,7 +7,7 @@ function Navbar({wallet}) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="flex flex-wrap md:flex-nowrap fixed w-screen justify-between pl-[22px] pr-[30px] items-center h-[125px] bg-white">
+        <div className="flex flex-wrap md:flex-nowrap fixed w-screen justify-between pl-[22px] pr-[30px] md:px-[60px] lg:px-[100px] items-center h-[70px] md:h-[80px] lg:h-[110px] bg-white">
             <LogoContainer className="w-full md:w-auto"/>
             <button className="md:hidden z-30" onClick={() => setIsOpen(!isOpen)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
